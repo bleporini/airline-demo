@@ -1,0 +1,27 @@
+insert into alerts
+select
+    c.key,
+    'sufficient_meals',
+    row(
+            c.economy_meals,
+            c.premium_meals,
+            c.business_meals,
+            c.first_meals
+        ) as cms,
+    row(
+            m.eco,
+            m.prem,
+            m.biz,
+            m.first
+        ) as flight,
+    map['','']
+from
+    cms_event /*+ OPTIONS('scan.startup.mode'='latest-offset') */ c join meals_per_flights FOR SYSTEM_TIME AS OF c.event_time m on c.key = m.key
+    join last_alerts FOR SYSTEM_TIME AS OF c.event_time a on c.key = a.key
+where
+    a.type = 'meal_shortage' and
+    (cast(c.economy_meals as float) / m.eco) >= ${meal_economy_threshold} or
+    (cast(c.premium_meals as float) / m.prem) >= ${meal_premium_threshold} or
+    (cast(c.business_meals as float) / m.biz) >= ${meal_business_threshold}  or
+    (cast(c.first_meals as float) / m.first) >= ${meal_first_threshold}
+;

@@ -1,0 +1,21 @@
+insert into alert_attempts
+select
+    m.key,
+    c.economy_meals,
+    m.eco,
+    c.premium_meals,
+    m.prem,
+    c.business_meals,
+    m.biz,
+    c.first_meals,
+    m.first,
+    c.headers
+from cms_event /*+ OPTIONS('scan.startup.mode'='latest-offset') */ c left join meals_per_flights
+    FOR SYSTEM_TIME AS OF c.event_time
+    m on c.key = m.key
+where
+        (cast(c.economy_meals as float) / m.eco) < ${meal_economy_threshold} or
+        (cast(c.premium_meals as float) / m.prem) <${meal_premium_threshold} or
+        (cast(c.business_meals as float) / m.biz) <${meal_business_threshold}  or
+        (cast(c.first_meals as float) / m.first) < ${meal_first_threshold}
+;

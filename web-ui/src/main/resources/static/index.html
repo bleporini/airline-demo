@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://getbootstrap.com/docs/5.3/assets/css/docs.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <title>Bootstrap Example</title>
+    <script src="https://cdn.jsdelivr.net/npm/xml-formatter@3.6.3/dist/browser/xml-formatter-singleton.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+    <!--
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
+    -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <style>
+        textarea.xml{
+            width: 100%;
+        }
+    </style>
+</head>
+<body class="p-3 m-0 border-0 bd-example m-0 border-0">
+<div class="toast-container position-fixed top-0 end-0 p-3">
+    <div id="notification" class="toast text-bg-success" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-body" id="notificationMessage">
+            Hello, world! This is a toast message.
+        </div>
+    </div>
+</div>
+<div class="toast-container position-fixed top-0 end-0 p-3">
+    <div id="notificationError" class="toast text-bg-danger" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-body" id="errorMessage">
+            Hello, world! This is a toast message.
+        </div>
+    </div>
+</div>
+<h1>Carrier demo</h1>
+<div class="form-check form-switch">
+    <input class="form-check-input" type="checkbox" role="switch" id="isXml">
+    <label class="form-check-label" for="isXml">XML</label>
+</div>
+<div class="accordion" id="accordionExample">
+    <div class="accordion-item">
+        <h2 class="accordion-header">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#passengers" aria-expanded="true" aria-controls="collapseOne">
+                Passengers
+            </button>
+        </h2>
+        <div id="passengers" class="accordion-collapse collapse show"  data-bs-parent="accordionExample">
+            <div class="accordion-body">
+                <table id="flightTbl" class="table">
+                    <tr>
+                        <th>&nbsp;</th>
+                        <th>Reference</th>
+                        <th>Class</th>
+                        <th>Name</th>
+                        <th>Passport number</th>
+                        <th>Date of Birth</th>
+                        <th>Seat number</th>
+                    </tr>
+                </table>
+
+            </div>
+        </div>
+    </div>
+    <div class="accordion-item" id="jsonAccordion">
+        <h2 class="accordion-header">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#jsonFlightInfo" aria-expanded="true" aria-controls="collapseOne">
+                Flight Information Converted to JSON
+            </button>
+        </h2>
+        <div id="jsonFlightInfo" class="accordion-collapse collapse show"  style="">
+            <div class="accordion-body">
+                <div id="jsonFi"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="accordion-item">
+        <h2 class="accordion-header">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                Flight information Form
+            </button>
+        </h2>
+        <div id="collapseOne" class="accordion-collapse collapse show"  style="">
+            <div class="accordion-body">
+                <button class="btn btn-primary" id="sendFlightInfoBtn"><i class="bi bi-filetype-xml"></i> Send XML Flight Information</button>
+                <button class="btn btn-primary" id="sendFlightInfoJsonBtn"><i class="bi bi-filetype-json"></i> Send JSON Flight Information</button>
+                <code id="xmlCode">
+                    <textarea  id="xmlContent" style="width: 100%;height: 30em;"></textarea>
+                </code>
+                <form id="flightForm">
+                    <h2 id="flight_id"></h2>
+                    <div class="form-group">
+                        <label for="flightNumber">Flight Number</label>
+                        <input type="text" class="form-control" id="flightNumber" name="flight_number" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="carrier">Carrier</label>
+                        <input type="text" class="form-control" id="carrier" name="carrier" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="departureTimestamp">Departure Timestamp</label>
+                        <input type="datetime-local" class="form-control" id="departureTimestamp" name="departure_timestamp" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="origin">Origin</label>
+                        <input type="text" class="form-control" id="origin" name="origin" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="destination">Destination</label>
+                        <input type="text" class="form-control" id="destination" name="destination" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="passengers">Passengers</label>
+                        <table class="table table-bordered">a
+                            <thead>
+                            <tr>
+                                <th><i class="bi bi-trash-fill"></i></th>
+                                <th>Reference</th>
+                                <th>Name</th>
+                                <th>Date of Birth</th>
+                                <th>Seat Number</th>
+                                <th>Class</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody id="passengers-container">
+
+                            </tbody>
+                        </table>
+                        <button type="button" class="btn btn-primary add-passenger">Add Passenger</button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="accordion-item">
+        <h2 class="accordion-header">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2" aria-expanded="true" aria-controls="collapseOne">
+                Check-in
+            </button>
+        </h2>
+        <div id="collapse2" class="accordion-collapse collapse show"  style="">
+            <div class="accordion-body">
+                <button class="btn btn-primary add-passenger" id="checkinBtn">Send check-in open</button>
+                <table class="table">
+                    <tr><th>Requests</th><th>Responses</th></tr>
+                    <tr>
+                        <td><span class="badge text-bg-primary" id="requests">0</span></td>
+                        <td><span class="badge  text-bg-success" id="responses">0</span></td>
+                    </tr>
+                </table>
+
+
+            </div>
+        </div>
+    </div>
+
+    <div class="accordion-item">
+        <h2 class="accordion-header">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse3" aria-expanded="true" aria-controls="collapseOne">
+                Catering Management System
+            </button>
+        </h2>
+        <div id="collapse3" class="accordion-collapse collapse show"  style="">
+            <div class="accordion-body">
+                <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="false" id="alert">
+                    <div class="toast-header">
+                        <svg class="bd-placeholder-img rounded me-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false"><rect width="100%" height="100%" fill="#007aff"/></svg>
+                        <strong class="me-auto">CMS Alerts</strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                    <div class="toast-body" id="alertMessage">
+                        Hello, world! This is a toast message.
+                    </div>
+                </div>
+                <button class="btn btn-primary add-passenger" id="sendCmsBtn">Send CMS event</button>
+
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th></th>
+                        <th>Required</th>
+                        <th>Actual</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <th>Economy</th>
+                        <td id="reqEco"></td>
+                        <td><input type="text" id="economy_meals" class="form-control" value="0"></td>
+                    </tr>
+                    <tr>
+                        <th>Premium</th>
+                        <td id="reqPrem"></td>
+                        <td><input type="text" id="premium_meals" class="form-control" value="0"></td>
+                    </tr>
+                    <tr>
+                        <th>Business</th>
+                        <td id="reqBiz"></td>
+                        <td><input type="text" id="business_meals" class="form-control" value="0"></td>
+                    </tr>
+                    <tr>
+                        <th>First</th>
+                        <td id="reqFirst"></td>
+                        <td><input type="text" id="first_meals" class="form-control" value="0"></td>
+                    </tr>
+
+                    </tbody>
+                </table>
+
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+
+
+<script type="application/javascript" src="index.js"></script>
+
+
+<!-- End Example Code -->
+</body>
+</html>
