@@ -28,18 +28,22 @@ variable "owner" {
 variable "meal_economy_threshold" {
   description = "Economy threshold before raising an alert"
   type        = number
+  default = 0.5
 }
 variable "meal_premium_threshold" {
   description = "Premium threshold before raising an alert"
   type        = number
+  default = 1.0
 }
 variable "meal_business_threshold" {
   description = "Business threshold before raising an alert"
   type        = number
+  default = 1.0
 }
 variable "meal_first_threshold" {
   description = "First class threshold before raising an alert"
   type        = number
+  default = 1.0
 }
 variable "artifact_version" {
   description = "The version is collected in the middle waiting for the artifact resource/data allows access to the version"
