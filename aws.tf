@@ -34,7 +34,7 @@ data "archive_file" "lambda" {
 
 resource "aws_lambda_function" "carrier-api" {
   filename      = "lambda_function_payload.zip"
-  function_name = "carrier-external-api"
+  function_name = "carrier-external-api-${random_id.id.id}"
   role          = aws_iam_role.iam_for_lambda.arn
   handler       = "lambda.handler"
 
