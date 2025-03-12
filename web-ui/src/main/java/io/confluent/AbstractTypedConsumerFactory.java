@@ -104,21 +104,21 @@ public class AbstractTypedConsumerFactory<K,V, KD extends Deserializer<K>, VD ex
             );
         }
 
-        public ConsumerRegistrator<RequestTopicKeySchema, byte[]> buildRequestTopicConsumer() {
+        public ConsumerRegistrator<byte[], byte[]> buildRequestTopicConsumer() {
             return build(
                     "passport_requests",
-                    RequestTopicKeySchema.class,
                     byte[].class,
-                    KafkaJsonSchemaDeserializer.class,
+                    byte[].class,
+                    ByteArrayDeserializer.class,
                     ByteArrayDeserializer.class
             );
         }
-        public  ConsumerRegistrator<ResponseTopicKeySchema, byte[]> buildResponseTopicConsumer(String topicName) {
+        public ConsumerRegistrator<byte[], byte[]> buildResponseTopicConsumer(String topicName) {
             return build(
                     topicName,
-                    ResponseTopicKeySchema.class,
                     byte[].class,
-                    KafkaJsonSchemaDeserializer.class,
+                    byte[].class,
+                    ByteArrayDeserializer.class,
                     ByteArrayDeserializer.class
             );
         }

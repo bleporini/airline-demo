@@ -22,16 +22,16 @@ public class CarrierWebSocketServlet extends JettyWebSocketServlet
 {
     private final ConsumerRegistrator<PassengersKeySchema, PassengersValueSchema> passengerRegistrator;
     private final ConsumerRegistrator<String, FlightInformationValueSchema> fiRegistrator;
-    private final ConsumerRegistrator<RequestTopicKeySchema, byte[]> requestTopicRegistrator;
-    private final ConsumerRegistrator<ResponseTopicKeySchema, byte[]> responseTopicRegistrator;
+    private final ConsumerRegistrator<byte[], byte[]> requestTopicRegistrator;
+    private final ConsumerRegistrator<byte[], byte[]> responseTopicRegistrator;
     private final ConsumerRegistrator<MealsPerFlightsKeySchema, MealsPerFlightsValueSchema> requiredMealsRegistrator;
     private final ConsumerRegistrator<AlertsKeySchema, AlertsValueSchema> alertsRegistrator;
 
     public CarrierWebSocketServlet(
             ConsumerRegistrator<PassengersKeySchema, PassengersValueSchema> passengerRegistrator,
             ConsumerRegistrator<String, FlightInformationValueSchema> fiRegistrator,
-            ConsumerRegistrator<RequestTopicKeySchema, byte[]> requestTopicRegistrator,
-            ConsumerRegistrator<ResponseTopicKeySchema, byte[]> responseTopicRegistrator,
+            ConsumerRegistrator<byte[], byte[]> requestTopicRegistrator,
+            ConsumerRegistrator<byte[], byte[]> responseTopicRegistrator,
             ConsumerRegistrator<MealsPerFlightsKeySchema, MealsPerFlightsValueSchema> requiredMealsRegistrator,
             ConsumerRegistrator<AlertsKeySchema, AlertsValueSchema> alertsRegistrator) {
         this.passengerRegistrator = passengerRegistrator;

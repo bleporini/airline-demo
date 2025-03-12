@@ -70,8 +70,8 @@ public class CarrierServer
                                    FlightInformationProducer producer,
                                    ConsumerRegistrator<PassengersKeySchema, PassengersValueSchema> passengerRegistrator,
                                    ConsumerRegistrator<String, FlightInformationValueSchema> fiRegistrator,
-                                   ConsumerRegistrator<RequestTopicKeySchema, byte[]> requestTopicRegistrator,
-                                   ConsumerRegistrator<ResponseTopicKeySchema, byte[]> responseTopicRegistrator,
+                                   ConsumerRegistrator<byte[], byte[]> requestTopicRegistrator,
+                                   ConsumerRegistrator<byte[], byte[]> responseTopicRegistrator,
                                    ConsumerRegistrator<MealsPerFlightsKeySchema, MealsPerFlightsValueSchema>requiredMealsRegistrator,
                                    ConsumerRegistrator<AlertsKeySchema, AlertsValueSchema> alertsConsumerRegistrator) {
         Server server = new Server(port);

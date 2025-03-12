@@ -32,8 +32,8 @@ public class CarrierWebSocket {
     private static final Logger LOG = LoggerFactory.getLogger(CarrierWebSocket.class);
     private final ConsumerRegistrator<PassengersKeySchema, PassengersValueSchema> passengerRegistrator;
     private final ConsumerRegistrator<String, FlightInformationValueSchema> fiRegistrator;
-    private final ConsumerRegistrator<RequestTopicKeySchema, byte[]> requestTopicRegistrator;
-    private final ConsumerRegistrator<ResponseTopicKeySchema, byte[]> responseTopicRegistrator;
+    private final ConsumerRegistrator<byte[], byte[]> requestTopicRegistrator;
+    private final ConsumerRegistrator<byte[], byte[]> responseTopicRegistrator;
     private final ConsumerRegistrator<MealsPerFlightsKeySchema, MealsPerFlightsValueSchema> requiredMealsRegistrator;
     private final ConsumerRegistrator<AlertsKeySchema, AlertsValueSchema> alertsRegistrator;
     private Session session;
@@ -43,8 +43,8 @@ public class CarrierWebSocket {
             ConsumerRegistrator<PassengersKeySchema,
             PassengersValueSchema> passengerRegistrator,
             ConsumerRegistrator<String, FlightInformationValueSchema> fiRegistrator,
-            ConsumerRegistrator<RequestTopicKeySchema, byte[]> requestTopicRegistrator,
-            ConsumerRegistrator<ResponseTopicKeySchema, byte[]> responseTopicRegistrator,
+            ConsumerRegistrator<byte[], byte[]> requestTopicRegistrator,
+            ConsumerRegistrator<byte[], byte[]> responseTopicRegistrator,
             ConsumerRegistrator<MealsPerFlightsKeySchema, MealsPerFlightsValueSchema> requiredMealsRegistrator,
             ConsumerRegistrator<AlertsKeySchema, AlertsValueSchema> alertsRegistrator) {
         this.passengerRegistrator = passengerRegistrator;
@@ -82,8 +82,8 @@ public class CarrierWebSocket {
         this.session.sendText("You are now connected to " + this.getClass().getName(), Callback.NOOP);
         passengerRegistrator.register(this.<PassengersKeySchema, PassengersValueSchema>buildConsumer("passenger", PassengersKeySchema::getKey));
         fiRegistrator.register(buildConsumer("flight_information", (s) -> s));
-        requestTopicRegistrator.register(this.buildConsumer("request", k -> k.getKey().toString()));
-        responseTopicRegistrator.register(this.buildConsumer("response", k -> k.getKey().toString()));
+        requestTopicRegistrator.register(this.buildConsumer("request", String::new));
+        responseTopicRegistrator.register(this.buildConsumer("response", String::new));
         requiredMealsRegistrator.register(this.buildConsumer("required_meals", MealsPerFlightsKeySchema::getKey));
         alertsRegistrator.register(this.buildConsumer("alerts", k -> k.getKey().toString()));
     }
