@@ -22,30 +22,6 @@ create table passport_requests(
 );
 EOT
 
-    subs-requests = <<-EOT
-create table subscriptionsRequests(
-                             key string primary key not enforced,
-                             val bytes,
-                             `headers` map<string,string> metadata,
-                              ts TIMESTAMP_LTZ(3) METADATA FROM 'timestamp' virtual
-)distributed by (key) into 1 buckets with(
-   'key.format'='json-registry',
-   'kafka.consumer.isolation-level' = 'read-uncommitted',
-   'value.format'='raw'
-);
-EOT
-   notif-req  = <<-EOT
-create table notificationsRequests(
-                              key string primary key not enforced ,
-                              val bytes,
-                             `headers` map<string,string> metadata,
-                              ts TIMESTAMP_LTZ(3) METADATA FROM 'timestamp' virtual
-) distributed by (key) into 1 buckets with(
-   'key.format'='json-registry',
-   'kafka.consumer.isolation-level' = 'read-uncommitted',
-   'value.format'='raw'
-     );
-EOT
   flight-information-xml = <<-EOT
 create table flight_information_xml (
   val bytes,
@@ -268,9 +244,6 @@ create table checkin_open_events(
 );
 EOT
 
-
-    subs-resp = "create table subscriptionsResponses like subscriptionsRequests;"
-    notif-resp = "create table notificationsResponses like notificationsRequests;"
   }
 }
 
@@ -382,42 +355,6 @@ group by key, headers
 ;
 EOT
 
-    gen-subs-req= <<-EOT
-insert into subscriptionsRequests
-select
-    p1.flight_id,
-    cast (
-            json_object(
-                'url' value 'https://qylcpzjqayixabnqcc6edkwepm0whtkn.lambda-url.eu-west-1.on.aws?subscribers=all'
-            )as bytes),
-    headers
-from
-(select key, flight_id, headers, count(*) as total from passengers group by key, flight_id, headers) p1 join
-(select key, count(*) as completed from passengers where details_completed=true group by key) p2 on p1.key = p2.key
-where p1.total = p2.completed;
-    EOT
-
-    gen-notif-req = <<-EOT
-insert into notificationsRequests
-with r as (
-    select
-      key,
-      json_query(
-        json_value(cast(val as string), '$.response'),
-        '$' returning array<string>
-      ) as urls,
-      headers
-    from subscriptionsResponses
-)select
-         r.key,
-         cast (
-                 json_object(
-                         'url' value u.url
-                     )as bytes
-             ),
-        headers
-     from r cross join unnest(r.urls) as u(url);
-EOT
     populate-flights= <<-EOT
 insert into flights
 select
