@@ -2,19 +2,6 @@ variable "ddls1st" {
   type    = map(any)
   default = {
 
-    request-topic=<<-EOT
-create table requestTopic(
-                             key row<`flight_id` string, `reference` string>  primary key not enforced,
-                             val bytes,
-                             `headers` map<string,string> metadata,
-                              ts TIMESTAMP_LTZ(3) METADATA FROM 'timestamp' virtual
-
-)distributed by (key) into 1 buckets with(
-   'key.format'='json-registry',
-   'kafka.consumer.isolation-level' = 'read-uncommitted',
-   'value.format'='raw'
-       );
-EOT
     passport-request-topic=<<-EOT
 create table passport_requests(
     key string primary key not enforced,
@@ -78,12 +65,6 @@ EOT
 variable "ddls" {
   type    = map(any)
   default = {
-/*
-    intermediate-flight-information = <<-EOT
-create table intermediate_flight_information as
-select xml_to_key(val) as key, xml_to_info(val) as v, ts  from `flight_information_xml`;
-EOT
-*/
     intermediate-flight-information = <<-EOT
 CREATE TABLE `flights`.`intermediate_flight_information` (
   `key` string,
@@ -288,7 +269,6 @@ create table checkin_open_events(
 EOT
 
 
-response-topic = "create table responseTopic like requestTopic;"
     subs-resp = "create table subscriptionsResponses like subscriptionsRequests;"
     notif-resp = "create table notificationsResponses like notificationsRequests;"
   }
@@ -401,33 +381,6 @@ from alerts
 group by key, headers
 ;
 EOT
-/*
-    update-passenger= <<-EOT
-insert into passengers
-with r as (
-    select
-        key,
-        cast (val as string) as json,
-        ts
-    from responseTopic
-)
-select
-    key.reference as key,
-    key.flight_id as flight_id,
-    json_value(json, '$.value.name') as name,
-    json_value(json, '$.value.date_of_birth') as date_of_birth ,
-    json_value(json_value(json, '$.response'),'$.passport_number') as passport_number ,
-    json_value(json, '$.value.seat_number') as seat_number ,
-    json_value(json, '$.value.class') as class ,
-    lower(json_value(json, '$.value.deleted')) = 'true' as deleted,
-    true as details_completed,
-    map[
-      'origin', 'passport query2',
-      'ts_from_response_topic', cast(ts as string)
-    ] as `headers`
-from r;
-EOT
-*/
 
     gen-subs-req= <<-EOT
 insert into subscriptionsRequests

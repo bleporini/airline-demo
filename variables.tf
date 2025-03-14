@@ -55,13 +55,6 @@ variable "drop_functions" {
   type = bool
 }
 
-/*
-variable "artifact_id" {
-  description = "Temporary waiting for https://confluent.slack.com/archives/C01880K2BAA/p1733904485398229 to be fixed"
-  type        = string
-  default     = "fail if not overridden"
-}
-*/
 
 
 

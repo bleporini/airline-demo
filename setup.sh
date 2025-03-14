@@ -2,8 +2,6 @@
 set -e
 cd xml-to-row-udf-vanilla
 mvn clean package
-cd ../request-processor-sink
-mvn clean package
 cd ..
 terraform init
 terraform apply -target=local_file.get-artifact-version -auto-approve
