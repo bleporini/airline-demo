@@ -1,7 +1,7 @@
 # Airline Demo
 
 ## Purpose
-![Pipeline](./pipeline.png)
+![Pipeline](./pipeline.jpg)
 This demo is showcasing some common Complex Event Processing that you can find in the airline space:
 - How to onboard all XML estate in a modern streaming platform
 - How to process the delta between messages instead of the usual Stream-Table duality principle
